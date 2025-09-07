@@ -71,7 +71,7 @@ const SignUp = () => {
                   )}
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="lastName">Last Name {"(Surname)"}:</Label>
+                  <Label htmlFor="lastName">Last Names {"(Surname)"}:</Label>
                   <Input
                     id="lastName"
                     type="text"
