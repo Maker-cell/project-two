@@ -19,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ForgotPasswordMailFormData,
   forgotPasswordMailSchema,
+  generateOtpCode,
 } from "@/lib/validator";
 import { ModeToggle } from "@/components/ui/theme-toggle";
 
@@ -32,15 +33,37 @@ const ForgotPassword = () => {
   } = useForm<ForgotPasswordMailFormData>({
     resolver: zodResolver(forgotPasswordMailSchema),
   });
-  const onSubmitForm = (data: ForgotPasswordMailFormData) => {
-    toast("Code sent to user email", {
-      description: "Click 'Okay' to enter code",
-      action: {
-        label: "Okay",
-        onClick: () => router.push("/forgot-password/via-mail/auth"),
-      },
-    });
-    reset();
+  const onSubmitForm = async (data: ForgotPasswordMailFormData) => {
+    const otp = generateOtpCode();
+
+    try {
+      const response = await fetch("/src/lib/send-otp.ts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          otp,
+        }),
+      });
+
+      if (response.ok) {
+        toast("Code sent to user email", {
+          description: "Click 'Okay' to enter code",
+          action: {
+            label: "Okay",
+            onClick: () => router.push("/forgot-password/via-mail/auth"),
+          },
+        });
+        reset();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      toast.error("Failed to send OTP. Please try again.");
+    }
   };
   return (
     <>

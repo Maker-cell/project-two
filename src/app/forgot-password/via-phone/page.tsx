@@ -16,11 +16,13 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { ModeToggle } from "@/components/ui/theme-toggle";
 import {
   ForgotPasswordPhoneFormData,
   forgotPasswordPhoneSchema,
-} from "@/lib/types";
-import { ModeToggle } from "@/components/ui/theme-toggle";
+  generateOtpCode,
+} from "@/lib/validator";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -32,16 +34,39 @@ const ForgotPassword = () => {
   } = useForm<ForgotPasswordPhoneFormData>({
     resolver: zodResolver(forgotPasswordPhoneSchema),
   });
-  const onSubmitForm = (data: ForgotPasswordPhoneFormData) => {
-    toast("Code sent to user phone number", {
-      description: "Click 'Okay' to enter code",
-      action: {
-        label: "Okay",
-        onClick: () => router.push("/forgot-password/via-mail/auth"),
-      },
-    });
-    reset();
+  const onSubmitForm = async (data: ForgotPasswordPhoneFormData) => {
+    const otp = generateOtpCode();
+
+    try {
+      const response = await fetch("/api/send-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone: data.phone,
+          otp,
+        }),
+      });
+
+      if (response.ok) {
+        toast("Code sent to user phone number", {
+          description: "Click 'Okay' to enter code",
+          action: {
+            label: "Okay",
+            onClick: () => router.push("/forgot-password/via-mail/auth"),
+          },
+        });
+        reset();
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      toast.error("Failed to send OTP. Please try again.");
+    }
   };
+
   return (
     <>
       <div className="sticky top-4 right-8 m-6 flex justify-end z-50">

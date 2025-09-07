@@ -13,9 +13,13 @@ import {
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { ModeToggle } from "@/components/ui/theme-toggle";
-import { confirmPasswordFormData, confirmPasswordSchema } from "@/lib/types";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import {
+  confirmPasswordFormData,
+  confirmPasswordSchema,
+} from "@/lib/validator";
 
 const NewPassword = () => {
   const router = useRouter();

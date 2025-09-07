@@ -27,11 +27,17 @@ const SignUp = () => {
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signupSchema),
   });
-  const { postData } = usePost<UserResponse, SignUpFormData>("");
+  const { postData } = usePost<
+    UserResponse,
+    Omit<SignUpFormData, "confirmPassword">
+  >("");
 
   const onSubmitForm = async (data: SignUpFormData) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...sanitizedData } = data;
+    // confirmPassword already validated with zod schema
     try {
-      const response = await postData(data);
+      const response = await postData(sanitizedData);
       console.log(response);
       router.push("/sign-up/created-successful");
       reset();

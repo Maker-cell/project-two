@@ -32,36 +32,6 @@ const sentCode = () => {
     },
   });
 };
-// const successful = () => {
-//   const otpError = document.getElementById("otpError") as HTMLElement;
-//   const otpOne = document.getElementById("otpOne") as HTMLInputElement;
-//   const otpTwo = document.getElementById("otpTwo") as HTMLInputElement;
-//   const otpThree = document.getElementById("otpThree") as HTMLInputElement;
-//   const otpFour = document.getElementById("otpFour") as HTMLInputElement;
-//   const otpFive = document.getElementById("otpFive") as HTMLInputElement;
-//   const otpSix = document.getElementById("otpSix") as HTMLInputElement;
-//   const allOtp =
-//     otpOne.value +
-//     otpTwo.value +
-//     otpThree.value +
-//     otpFour.value +
-//     otpFive.value +
-//     otpSix.value;
-
-//   if (allOtp === null) {
-//     otpError.innerText = "Please enter OTP.";
-//     return;
-//   } else if (allOtp.length < 6) {
-//     otpError.innerText = "Please enter 6 digit OTP.";
-//     return;
-//   } else if (allOtp === "123456") {
-//     otpError.innerText = "";
-//     return;
-//   } else {
-//     otpError.innerText = "Invalid OTP.";
-//     return;
-//   }
-// };
 
 const InputOTPPattern = () => {
   const router = useRouter();
